@@ -1,7 +1,6 @@
-
 // src/components/Layout/Sidebar.jsx
 import React from 'react';
-import { Layout, Menu, Typography, Avatar, Button, Drawer } from 'antd';
+import { Layout, Menu, Typography, Avatar, Button } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   DashboardOutlined, 
@@ -11,7 +10,8 @@ import {
   TeamOutlined,
   SettingOutlined,
   QuestionCircleOutlined,
-  CloseOutlined
+  MenuFoldOutlined,
+  MenuUnfoldOutlined
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -61,73 +61,23 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     }
   ];
 
-  // Desktop sidebar
-  const DesktopSidebar = (
+  return (
     <Sider
       width={200}
       collapsible
       collapsed={collapsed}
       trigger={null}
-      className="app-sidebar desktop-sidebar"
+      className="app-sidebar"
       style={{
         background: '#fff',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        overflow: 'auto',
+        boxShadow: '2px 0 8px rgba(0,0,0,0.15)',
         height: '100vh',
         position: 'fixed',
-        left: 0,
+        left: collapsed ? -200 : 0,
         top: 0,
         bottom: 0,
-        display: 'none',
-        '@media (min-width: 768px)': { 
-          display: 'block'
-        }
-      }}
-    >
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: collapsed ? 'center' : 'flex-start',
-        padding: collapsed ? '16px 0' : '16px', 
-        borderBottom: '1px solid #f0f0f0',
-        marginBottom: 16
-      }}>
-        <Avatar 
-          shape="square" 
-          size={collapsed ? 32 : 40}
-          style={{ backgroundColor: '#3A36DB' }}
-        >
-          FT
-        </Avatar>
-        {!collapsed && (
-          <Title level={5} style={{ margin: '0 0 0 8px', color: '#3A36DB' }}>
-            FinTracker
-          </Title>
-        )}
-      </div>
-      <Menu
-        mode="inline"
-        selectedKeys={[location.pathname]}
-        style={{ borderRight: 0 }}
-        items={menuItems}
-      />
-    </Sider>
-  );
-
-  // Mobile drawer sidebar
-  const MobileSidebar = (
-    <Drawer
-      placement="left"
-      closable={false}
-      onClose={toggleSidebar}
-      open={!collapsed}
-      width={250}
-      bodyStyle={{ padding: 0 }}
-      className="mobile-sidebar"
-      style={{
-        '@media (min-width: 768px)': { 
-          display: 'none'
-        }
+        zIndex: 10,
+        transition: 'left 0.3s'
       }}
     >
       <div style={{ 
@@ -135,24 +85,29 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         alignItems: 'center', 
         justifyContent: 'space-between',
         padding: '16px', 
-        borderBottom: '1px solid #f0f0f0'
+        borderBottom: '1px solid #f0f0f0',
+        marginBottom: 16
       }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Avatar 
             shape="square" 
-            size={40}
+            size={collapsed ? 32 : 40}
             style={{ backgroundColor: '#3A36DB' }}
           >
             FT
           </Avatar>
-          <Title level={5} style={{ margin: '0 0 0 8px', color: '#3A36DB' }}>
-            FinTracker
-          </Title>
+          {!collapsed && (
+            <Title level={5} style={{ margin: '0 0 0 8px', color: '#3A36DB' }}>
+              FinTracker
+            </Title>
+          )}
         </div>
+        
         <Button 
           type="text" 
-          icon={<CloseOutlined />} 
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={toggleSidebar}
+          style={{ fontSize: '16px' }}
         />
       </div>
       <Menu
@@ -161,14 +116,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
         style={{ borderRight: 0 }}
         items={menuItems}
       />
-    </Drawer>
-  );
-
-  return (
-    <>
-      {DesktopSidebar}
-      {MobileSidebar}
-    </>
+    </Sider>
   );
 };
 

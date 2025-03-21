@@ -1,6 +1,6 @@
 
-// src/App.jsx (updated for responsive layout)
-import React, { useState } from 'react';
+// src/App.jsx (updated)
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout, ConfigProvider, theme } from 'antd';
 import { FinancialProvider } from './contexts/FinancialContext';
@@ -25,7 +25,26 @@ import './styles/modern-theme.css';
 dayjs.locale('tr');
 
 const App = () => {
-  const [collapsed, setCollapsed] = useState(window.innerWidth < 768);
+  const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      
+      // Auto collapse on mobile
+      if (mobile) {
+        setCollapsed(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Check on mount
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -57,7 +76,7 @@ const App = () => {
               <Layout.Content 
                 className="app-content"
                 style={{ 
-                  marginLeft: window.innerWidth >= 768 ? (collapsed ? '80px' : '200px') : 0,
+                  marginLeft: isMobile ? 0 : (collapsed ? '80px' : '200px'),
                   transition: 'margin-left 0.3s'
                 }}
               >
