@@ -1,13 +1,15 @@
 // src/components/Layout/Header.jsx
 import React from 'react';
-import { Layout, Typography, Space, Avatar, Select, DatePicker, Badge, Button, Dropdown } from 'antd';
+import { Layout, Typography, Space, Avatar, Select, DatePicker, Badge, Button, Dropdown, Menu } from 'antd';
 import { 
   MenuUnfoldOutlined, 
   MenuFoldOutlined, 
   BellOutlined, 
   UserOutlined, 
   SettingOutlined,
-  DownOutlined
+  DownOutlined,
+  CalendarOutlined,
+  AppstoreOutlined
 } from '@ant-design/icons';
 import { useFinancial } from '../../contexts/FinancialContext';
 import dayjs from 'dayjs';
@@ -35,10 +37,10 @@ const Header = ({ collapsed, toggleSidebar }) => {
     }
   };
 
+  // Get selected company data (used for display or future functionality)
   const selectedCompanyData = companies.find(
     (company) => company.id === selectedCompany
   );
-  
   const companyName = selectedCompanyData?.name || 'Company';
 
   const userMenuItems = [
@@ -67,6 +69,42 @@ const Header = ({ collapsed, toggleSidebar }) => {
     },
   ];
 
+  // Menu for mobile dropdown
+  const mobileMenu = (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: 'Tarih Seçin',
+          icon: <CalendarOutlined />,
+          children: [
+            {
+              key: '1-1',
+              label: <DatePicker 
+                value={dayjs(selectedDate)}
+                onChange={handleDateChange} 
+                allowClear={false}
+                bordered={false}
+              />
+            }
+          ]
+        },
+        {
+          key: '2',
+          label: 'Şirket Seçin',
+          icon: <AppstoreOutlined />,
+          children: companies.map(company => ({
+            key: `company-${company.id}`,
+            label: company.name,
+            onClick: () => handleCompanyChange(company.id)
+          }))
+        },
+        ...notificationMenuItems,
+        ...userMenuItems
+      ]}
+    />
+  );
+
   return (
     <AntHeader className="app-header">
       <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
@@ -77,12 +115,16 @@ const Header = ({ collapsed, toggleSidebar }) => {
             onClick={toggleSidebar}
             style={{ fontSize: '16px', marginRight: 24 }}
           />
-          <Title level={4} style={{ margin: 0, color: '#3A36DB' }}>
+          <Title level={4} style={{ margin: 0, color: '#3A36DB', display: 'none', '@media (min-width: 576px)': { display: 'block' } }}>
             Financial Tracker
+          </Title>
+          <Title level={4} style={{ margin: 0, color: '#3A36DB', display: 'block', '@media (min-width: 576px)': { display: 'none' } }}>
+            FT
           </Title>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* Desktop Controls - Hidden on Mobile */}
+        <div className="desktop-controls" style={{ display: 'none', '@media (min-width: 768px)': { display: 'flex' } }}>
           <Space size={16}>
             <Select
               value={selectedCompany}
@@ -92,18 +134,6 @@ const Header = ({ collapsed, toggleSidebar }) => {
               suffixIcon={<DownOutlined style={{ color: '#3A36DB' }} />}
               dropdownStyle={{ borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
             >
-              {/* "Hepsi" seçeneği */}
-              <Option key="all" value="all">
-                <Space>
-                  <Avatar 
-                    size="small" 
-                    style={{ backgroundColor: '#3A36DB' }}
-                  >
-                    H
-                  </Avatar>
-                  Hepsi
-                </Space>
-              </Option>
               {companies.map((company) => (
                 <Option key={company.id} value={company.id}>
                   <Space>
@@ -160,6 +190,13 @@ const Header = ({ collapsed, toggleSidebar }) => {
               </Space>
             </Dropdown>
           </Space>
+        </div>
+        
+        {/* Mobile Menu Button - Visible only on Mobile */}
+        <div className="mobile-menu" style={{ display: 'flex', '@media (min-width: 768px)': { display: 'none' } }}>
+          <Dropdown overlay={mobileMenu} trigger={['click']}>
+            <Button type="text" icon={<AppstoreOutlined style={{ fontSize: '20px' }} />} />
+          </Dropdown>
         </div>
       </div>
     </AntHeader>

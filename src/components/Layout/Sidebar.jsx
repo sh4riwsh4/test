@@ -1,7 +1,7 @@
 
 // src/components/Layout/Sidebar.jsx
 import React from 'react';
-import { Layout, Menu, Typography, Avatar } from 'antd';
+import { Layout, Menu, Typography, Avatar, Button, Drawer } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   DashboardOutlined, 
@@ -10,13 +10,14 @@ import {
   BarChartOutlined,
   TeamOutlined,
   SettingOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  CloseOutlined
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
 const { Title } = Typography;
 
-const Sidebar = ({ collapsed }) => {
+const Sidebar = ({ collapsed, toggleSidebar }) => {
   const location = useLocation();
   
   const menuItems = [
@@ -60,13 +61,14 @@ const Sidebar = ({ collapsed }) => {
     }
   ];
 
-  return (
+  // Desktop sidebar
+  const DesktopSidebar = (
     <Sider
       width={200}
       collapsible
       collapsed={collapsed}
       trigger={null}
-      className="app-sidebar"
+      className="app-sidebar desktop-sidebar"
       style={{
         background: '#fff',
         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
@@ -76,6 +78,10 @@ const Sidebar = ({ collapsed }) => {
         left: 0,
         top: 0,
         bottom: 0,
+        display: 'none',
+        '@media (min-width: 768px)': { 
+          display: 'block'
+        }
       }}
     >
       <div style={{ 
@@ -106,6 +112,63 @@ const Sidebar = ({ collapsed }) => {
         items={menuItems}
       />
     </Sider>
+  );
+
+  // Mobile drawer sidebar
+  const MobileSidebar = (
+    <Drawer
+      placement="left"
+      closable={false}
+      onClose={toggleSidebar}
+      open={!collapsed}
+      width={250}
+      bodyStyle={{ padding: 0 }}
+      className="mobile-sidebar"
+      style={{
+        '@media (min-width: 768px)': { 
+          display: 'none'
+        }
+      }}
+    >
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        padding: '16px', 
+        borderBottom: '1px solid #f0f0f0'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Avatar 
+            shape="square" 
+            size={40}
+            style={{ backgroundColor: '#3A36DB' }}
+          >
+            FT
+          </Avatar>
+          <Title level={5} style={{ margin: '0 0 0 8px', color: '#3A36DB' }}>
+            FinTracker
+          </Title>
+        </div>
+        <Button 
+          type="text" 
+          icon={<CloseOutlined />} 
+          onClick={toggleSidebar}
+        />
+      </div>
+      <Menu
+        mode="inline"
+        selectedKeys={[location.pathname]}
+        style={{ borderRight: 0 }}
+        items={menuItems}
+      />
+    </Drawer>
+  );
+
+  return (
+    <>
+      {DesktopSidebar}
+      {MobileSidebar}
+    </>
   );
 };
 

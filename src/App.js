@@ -1,4 +1,5 @@
-// src/App.jsx
+
+// src/App.jsx (updated for responsive layout)
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout, ConfigProvider, theme } from 'antd';
@@ -17,14 +18,14 @@ import Income from './pages/Income';
 import Expenses from './pages/Expenses';
 import Reports from './pages/Reports';
 
-// Import our modern theme
+// Import styles
 import './styles/modern-theme.css';
 
 // Set dayjs locale to Turkish
 dayjs.locale('tr');
 
 const App = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(window.innerWidth < 768);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -52,10 +53,13 @@ const App = () => {
           <Layout className="app-layout">
             <Header collapsed={collapsed} toggleSidebar={toggleSidebar} />
             <Layout>
-              <Sidebar collapsed={collapsed} />
+              <Sidebar collapsed={collapsed} toggleSidebar={toggleSidebar} />
               <Layout.Content 
                 className="app-content"
-                style={{ marginLeft: collapsed ? '80px' : '200px' }}
+                style={{ 
+                  marginLeft: window.innerWidth >= 768 ? (collapsed ? '80px' : '200px') : 0,
+                  transition: 'margin-left 0.3s'
+                }}
               >
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
@@ -63,9 +67,9 @@ const App = () => {
                   <Route path="/expenses" element={<Expenses />} />
                   <Route path="/reports" element={<Reports />} />
                 </Routes>
+                <Footer />
               </Layout.Content>
             </Layout>
-            <Footer />
           </Layout>
         </Router>
       </FinancialProvider>

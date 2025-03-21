@@ -300,3 +300,92 @@
   .p-4 {
     padding: 16px;
   }
+
+@media (max-width: 768px) {
+  .app-content {
+    margin-left: 0 !important;
+    padding: 16px;
+  }
+  
+  .app-header {
+    padding: 0 16px;
+  }
+  
+  .desktop-sidebar {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-sidebar {
+    display: none !important;
+  }
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  background: #fff;
+}
+
+.modern-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: none;
+}
+
+.modern-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.modern-table .ant-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.modern-table .ant-table-thead > tr > th {
+  background-color: #f7f7f7;
+  border-bottom: none;
+  padding: 16px;
+  font-weight: 600;
+}
+
+.modern-table .ant-table-tbody > tr > td {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.ant-segmented {
+  width: 100%;
+}
+
+.ant-segmented .ant-segmented-item {
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.ant-segmented .ant-segmented-item-selected {
+  background-color: #3A36DB;
+  color: white;
+}
+
+@media (max-width: 576px) {
+  .ant-segmented {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  
+  .ant-segmented .ant-segmented-item {
+    flex: none;
+    width: 100%;
+    text-align: center;
+  }
+}
